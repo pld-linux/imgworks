@@ -47,11 +47,16 @@ zmianę orzmiaru oraz dodawanie ramek i tekstu.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT%{_bindir}
 
 %{__make} install \
 	PREFIX=$RPM_BUILD_ROOT%{_prefix} \
+	EDV_BIN_DIR=$RPM_BUILD_ROOT%{_libdir}/endeavour2/bin \
 	MAN_DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
 	INSTBINFLAGS="-m755"
+
+# fix symlink to buildroot
+ln -sf ../%{_lib}/endeavour2/bin/imgworks $RPM_BUILD_ROOT%{_bindir}/imgworks
 
 bzip2 -d $RPM_BUILD_ROOT%{_mandir}/man1/*.bz2
 
@@ -61,6 +66,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS README
+%attr(755,root,root) %{_bindir}/imgworks
 %attr(755,root,root) %{_libdir}/endeavour2/bin/imgworks
 %{_datadir}/endeavour2/help/imgworks
 %{_datadir}/endeavour2/icons/icon_imgworks_*.xpm
