@@ -1,0 +1,40 @@
+--- imgworks-0.8.1/Makefile.orig	2009-02-10 09:00:00.000000000 +0100
++++ imgworks-0.8.1/Makefile	2014-02-07 22:40:35.732880519 +0100
+@@ -9,18 +9,18 @@
+ 
+ all config:
+ 	@for subdir in $(ALL_SRC_DIRS); do			\
+-            $(MAKE) -s -C $$subdir -f Makefile $@;		\
++            $(MAKE) -C $$subdir -f Makefile $@;		\
+         done
+ 	@echo "To install, type \"su\" (to gain root privileges)\
+ and then type \"make install\"."
+ 
+ install:
+ 	@for subdir in $(ALL_SRC_DIRS); do			\
+-            $(MAKE) -s -C $$subdir -f Makefile $@;		\
++            $(MAKE) -C $$subdir -f Makefile $@;		\
+         done
+ 	@echo "Installation complete."
+ 
+ clean:
+ 	@for subdir in $(ALL_SRC_DIRS); do			\
+-            $(MAKE) -s -C $$subdir -f Makefile $@; 		\
++            $(MAKE) -C $$subdir -f Makefile $@; 		\
+         done
+--- imgworks-0.8.1/imgworks/Makefile.orig	2009-02-10 09:00:00.000000000 +0100
++++ imgworks-0.8.1/imgworks/Makefile	2014-02-07 22:43:14.209540535 +0100
+@@ -32,11 +32,9 @@
+ OBJ_C   = $(SRC_C:.c=.o)
+ OBJ_CPP = $(SRC_CPP:.cpp=.o)
+ .c.o:
+-	@echo "Compiling module $*.o"
+-	@+$(CC) -c $*.c $(INC_DIRS) $(CFLAGS)
++	$(CC) -c $*.c $(INC_DIRS) $(CFLAGS)
+ .cpp.o:
+-	@echo "Compiling module $*.o"
+-	@+$(CPP) -c $*.cpp $(INC_DIRS) $(CFLAGS) $(CPPFLAGS)
++	$(CPP) -c $*.cpp $(INC_DIRS) $(CFLAGS) $(CPPFLAGS)
+ 
+ # Programs
+ LS      = ls
