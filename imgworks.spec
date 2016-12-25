@@ -2,12 +2,13 @@ Summary:	ImgWorks - graphical batch image converter
 Summary(pl.UTF-8):	ImgWorks - graficzny wsadowy konwerter obrazów
 Name:		imgworks
 Version:	0.8.1
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		X11/Applications/Graphics
 Source0:	http://wolfsinger.com/~wolfpack/packages/%{name}-%{version}.tar.bz2
 # Source0-md5:	4badf90fe08ae8fceb4cabc032558285
 Patch0:		%{name}-verbose.patch
+Patch1:		imagemagick7.patch
 URL:		http://freecode.com/projects/imgworks
 BuildRequires:	ImageMagick-devel
 BuildRequires:	endeavour-devel >= 3
@@ -35,13 +36,14 @@ zmianę orzmiaru oraz dodawanie ramek i tekstu.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__make} \
 	CC="%{__cc}" \
 	CPP="%{__cxx}" \
 	CFLAGS="%{rpmcflags} -Wall -DPREFIX=\\\"%{_prefix}\\\" \
-		-DHAVE_IMAGE_MAGICK `Magick-config --cflags` `Wand-config --cflags` \
+		-DHAVE_IMAGE_MAGICK `MagickCore-config --cflags` `MagickWand-config --cflags` \
 		`gtk-config --cflags` \
 		-DHAVE_LIBENDEAVOUR2 `endeavour2-base-config --cflags`"
 

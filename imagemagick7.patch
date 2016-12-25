@@ -1,0 +1,156 @@
+diff -ur imgworks-0.8.1/imgworks/convparm.c imgworks-im7/imgworks/convparm.c
+--- imgworks-0.8.1/imgworks/convparm.c	2009-02-10 09:00:00.000000000 +0100
++++ imgworks-im7/imgworks/convparm.c	2016-12-25 20:51:06.732614796 +0100
+@@ -3,7 +3,7 @@
+ #ifdef HAVE_IMAGE_MAGICK
+ # include <stdio.h>
+ # include <sys/types.h>
+-# include <wand/magick_wand.h>
++# include <MagickWand/MagickWand.h>
+ #endif
+ #include <gtk/gtk.h>
+ 
+diff -ur imgworks-0.8.1/imgworks/main.c imgworks-im7/imgworks/main.c
+--- imgworks-0.8.1/imgworks/main.c	2009-02-10 09:00:00.000000000 +0100
++++ imgworks-im7/imgworks/main.c	2016-12-25 20:53:04.940380768 +0100
+@@ -4,7 +4,7 @@
+ #include <time.h>
+ #include <sys/types.h>
+ #ifdef HAVE_IMAGE_MAGICK
+-# include <wand/magick_wand.h>
++# include <MagickWand/MagickWand.h>
+ #endif
+ #ifdef IMGWORKS_USE_THREADS
+ # include <pthread.h>
+diff -ur imgworks-0.8.1/imgworks/Makefile imgworks-im7/imgworks/Makefile
+--- imgworks-0.8.1/imgworks/Makefile	2016-12-25 21:24:13.951856561 +0100
++++ imgworks-im7/imgworks/Makefile	2016-12-25 21:05:15.242562524 +0100
+@@ -5,7 +5,7 @@
+ CFLAGS += -DPREFIX="\"/usr\""
+ CFLAGS += -DNEED_STRCASESTR
+ #CFLAGS += -DIMGWORKS_USE_THREADS
+-CFLAGS += -DHAVE_IMAGE_MAGICK `Magick-config --cflags` `Wand-config --cflags`
++CFLAGS += -DHAVE_IMAGE_MAGICK `MagickCore-config --cflags` `MagickWand-config --cflags`
+ CFLAGS += `gtk-config --cflags`
+ CFLAGS += -DHAVE_LIBENDEAVOUR2 `endeavour2-base-config --cflags`
+ 
+@@ -13,7 +13,7 @@
+ 
+ LIBS = -lm
+ #LIBS += -lpthread -lgthread
+-LIBS += `Magick-config --libs` `Wand-config --libs`
++LIBS += `MagickCore-config --libs` `MagickWand-config --libs`
+ LIBS += `gtk-config --libs`
+ LIBS += `endeavour2-base-config --libs`
+ 
+diff -ur imgworks-0.8.1/imgworks/winconv.c imgworks-im7/imgworks/winconv.c
+--- imgworks-0.8.1/imgworks/winconv.c	2009-02-10 09:00:00.000000000 +0100
++++ imgworks-im7/imgworks/winconv.c	2016-12-25 21:23:17.338556509 +0100
+@@ -9,7 +9,7 @@
+ # include <pthread.h>
+ #endif
+ #if defined(HAVE_IMAGE_MAGICK)
+-# include <wand/magick_wand.h>
++# include <MagickWand/MagickWand.h>
+ #endif
+ #include <gtk/gtk.h>
+ #ifdef HAVE_LIBENDEAVOUR2
+@@ -937,8 +937,7 @@
+ 				    wand,
+ 				    (unsigned long)new_width,	/* New width */
+ 				    (unsigned long)new_height,	/* New height */
+-				    LanczosFilter,		/* Filter type */
+-				    1.0
++				    LanczosFilter		/* Filter type */
+ 				) == MagickFalse)
+ 				{
+ 				    IMAGE_MAGICK_THROW_EXCEPTION(wand);
+@@ -963,7 +962,8 @@
+ 						(unsigned long)f->width,
+ 						(unsigned long)f->height,
+ 						(long)f->inner_bevel,
+-						(long)f->outer_bevel
++						(long)f->outer_bevel,
++						NoCompositeOp
+ 				    ) == MagickFalse)
+ 				    {
+ 						IMAGE_MAGICK_THROW_EXCEPTION(wand);
+@@ -992,7 +992,7 @@
+ 	}
+ 
+ 	/* Go back to the first frame */
+-	MagickSetImageIndex(wand, 0l);
++	MagickSetIteratorIndex(wand, 0l);
+ 
+ 	/* Print writing status message */
+ 	s = g_strdup_printf(
+diff -ur imgworks-0.8.1/imgworks/winopcb.c imgworks-im7/imgworks/winopcb.c
+--- imgworks-0.8.1/imgworks/winopcb.c	2009-02-10 09:00:00.000000000 +0100
++++ imgworks-im7/imgworks/winopcb.c	2016-12-25 20:56:09.215230051 +0100
+@@ -1,7 +1,7 @@
+ #ifdef HAVE_IMAGE_MAGICK
+ # include <stdio.h>
+ # include <sys/types.h>
+-# include <wand/magick_wand.h>
++# include <MagickWand/MagickWand.h>
+ #endif
+ #include <string.h>
+ #include <ctype.h>
+diff -ur imgworks-0.8.1/imgworks/winpreview.c imgworks-im7/imgworks/winpreview.c
+--- imgworks-0.8.1/imgworks/winpreview.c	2009-02-10 09:00:00.000000000 +0100
++++ imgworks-im7/imgworks/winpreview.c	2016-12-25 21:07:12.223808954 +0100
+@@ -3,7 +3,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #ifdef HAVE_IMAGE_MAGICK
+-# include <wand/magick_wand.h>
++# include <MagickWand/MagickWand.h>
+ #endif
+ #include <gtk/gtk.h>
+ #include <gdk/gdkrgb.h>
+@@ -595,12 +595,11 @@
+ 		wand,
+ 		(unsigned long)new_width,	/* New width */
+ 		(unsigned long)new_height,	/* New height */
+-		PointFilter,			/* Filter type */
++		PointFilter			/* Filter type */
+ /* We do not need and cannot use filters that play with the alpha
+  * channel
+-		LanczosFilter,
++		LanczosFilter
+  */
+-		1.0
+ 	    ) != MagickFalse)
+ 	    {
+ 		img_width = new_width = (gint)MagickGetImageWidth(wand);
+@@ -616,16 +615,16 @@
+ 	{
+ 	    gint bpp, bpl;
+ 	    guint8 *data;
+-	  case GrayscaleMatteType:
+-	  case PaletteMatteType:
+-	  case TrueColorMatteType:
+-	  case ColorSeparationMatteType:
++	  case GrayscaleAlphaType:
++	  case PaletteAlphaType:
++	  case TrueColorAlphaType:
++	  case ColorSeparationAlphaType:
+ 	    bpp = 4;
+ 	    bpl = new_width * bpp;
+ 	    data = (guint8 *)g_malloc(bpl * new_height);
+ 	    if(data != NULL)
+ 	    {
+-		if(MagickGetImagePixels(
++		if(MagickImportImagePixels(
+ 		    wand,
+ 		    0, 0,
+ 		    (unsigned long)new_width,
+@@ -698,7 +697,7 @@
+ 	    data = (guint8 *)g_malloc(bpl * new_height);
+ 	    if(data != NULL)
+ 	    {
+-		if(MagickGetImagePixels(
++		if(MagickImportImagePixels(
+ 		    wand,
+ 		    0, 0,
+ 		    (unsigned long)new_width,
