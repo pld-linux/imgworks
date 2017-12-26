@@ -2,7 +2,7 @@ Summary:	ImgWorks - graphical batch image converter
 Summary(pl.UTF-8):	ImgWorks - graficzny wsadowy konwerter obrazów
 Name:		imgworks
 Version:	0.8.1
-Release:	6
+Release:	7
 License:	GPL v2
 Group:		X11/Applications/Graphics
 Source0:	http://wolfsinger.com/~wolfpack/packages/%{name}-%{version}.tar.bz2
